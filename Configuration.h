@@ -16,3 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #define DEBUG
+
+// Set CS to pin 10
+#define SPI_CS_PIN 10
+
+// Set INT to pin 2
+#define CAN_INT_PIN 2
