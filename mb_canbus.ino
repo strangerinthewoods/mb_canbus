@@ -17,7 +17,31 @@ void setup()
   #endif
 
   DEBUG_PRINT("Starting can bus controller...");
-  while (CAN_OK != CAN.begin(MCP_ANY, CAN_125KBPS, MCP_8MHZ))
+  INT8U can_speed;
+  switch (random(0,3))
+  {
+    case 0:
+      can_speed = CAN_33K3BPS;
+      Serial.println("**************** CAN BUS SPEED: 33.3kbps **************** ");
+      break;
+    case 1:
+      can_speed = CAN_125KBPS;
+      Serial.println("**************** CAN BUS SPEED: 125kbps **************** ");
+      break;
+    case 2:
+      can_speed = CAN_250KBPS;
+      Serial.println("**************** CAN BUS SPEED: 250kbps **************** ");
+      break;
+    case 3:
+      can_speed = CAN_500KBPS;
+      Serial.println("**************** CAN BUS SPEED: 500kbps **************** ");
+      break;
+    default:
+      can_speed = CAN_125KBPS;
+      Serial.println("**************** CAN BUS SPEED: 125kbps **************** ");
+      break;
+  }
+  while (CAN_OK != CAN.begin(MCP_ANY, can_speed, MCP_8MHZ))
   {
     DEBUG_PRINT("CAN BUS Shield init: ERROR");
     delay(500);
