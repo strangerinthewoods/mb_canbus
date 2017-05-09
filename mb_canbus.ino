@@ -44,7 +44,8 @@ void loop() {
 
   // Receipt message
   // *************************************
-  if(!digitalRead(CAN_INT_PIN))            // If CAN_INT_PIN pin is low, read receive buffer
+  if(CAN_MSGAVAIL == CAN.checkReceive())
+  // if(!digitalRead(CAN_INT_PIN))            // If CAN_INT_PIN pin is low, read receive buffer
   {
     CAN.readMsgBuf(&rxId, &len, buf);       // Read data: len = data length, buf = data byte(s)
 
