@@ -17,17 +17,17 @@ void setup()
   #endif
 
     DEBUG_PRINT("Starting can bus controller...");
-  while (CAN_OK != CAN.begin(MCP_LOOPBACK, CAN_125KBPS, MCP_8MHZ))
+  while (CAN_OK != CAN.begin(MCP_LOOPBACK, CAN_125KBPS, MCP_8MHZ)) //test
 //  while (CAN_OK != CAN.begin(MCP_STDEXT, CAN_125KBPS, MCP_8MHZ)) //test
-//  while (CAN_OK != CAN.begin(MCP_ANY, CAN_125KBPS, MCP_8MHZ)) //test
+//  while (CAN_OK != CAN.begin(MCP_ANY, CAN_125KBPS, MCP_8MHZ))
   {
     DEBUG_PRINT("CAN BUS Shield init: ERROR");
     delay(500);
   }
 
   // Set operation mode to normal so the MCP2515 sends acks to received data.
-  CAN.setMode(MCP_LOOPBACK);
-//  CAN.setMode(MCP_NORMAL); //test
+  CAN.setMode(MCP_LOOPBACK); //test
+//  CAN.setMode(MCP_NORMAL);
 
   // Configuring pin for /INT input
   pinMode(CAN_INT_PIN, INPUT);
