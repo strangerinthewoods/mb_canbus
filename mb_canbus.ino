@@ -16,18 +16,15 @@ void setup()
     while(!Serial);
   #endif
 
-    DEBUG_PRINT("Starting can bus controller...");
-  while (CAN_OK != CAN.begin(MCP_LOOPBACK, CAN_125KBPS, MCP_8MHZ)) //test
-//  while (CAN_OK != CAN.begin(MCP_STDEXT, CAN_125KBPS, MCP_8MHZ)) //test
-//  while (CAN_OK != CAN.begin(MCP_ANY, CAN_125KBPS, MCP_8MHZ))
+  DEBUG_PRINT("Starting can bus controller...");
+  while (CAN_OK != CAN.begin(MCP_ANY, CAN_125KBPS, MCP_8MHZ))
   {
     DEBUG_PRINT("CAN BUS Shield init: ERROR");
     delay(500);
   }
 
   // Set operation mode to normal so the MCP2515 sends acks to received data.
-  CAN.setMode(MCP_LOOPBACK); //test
-//  CAN.setMode(MCP_NORMAL);
+  //CAN.setMode(MCP_NORMAL);
 
   // Configuring pin for /INT input
   pinMode(CAN_INT_PIN, INPUT);
@@ -43,10 +40,27 @@ void loop() {
   unsigned char len = 0;
   unsigned char buf[8];
 
+
+  // test checkReceive
+  if(CAN_MSGAVAIL == CAN.checkReceive()) 
+  {
+    CAN.readMsgBuf(&rxId, &len, buf);
+    Serial.print("<");
+    Serial.print(rxId);
+    Serial.print(",");
+    for(int i = 0; i < len; i++)
+    {
+      Serial.print(buf[i]);
+      Serial.print(",");
+    }
+    Serial.print(">");
+    Serial.println();
+  }
+
+  
   // Receipt message
   // *************************************
-  if(CAN_MSGAVAIL == CAN.checkReceive()) //test
-  // if(!digitalRead(CAN_INT_PIN))            // If CAN_INT_PIN pin is low, read receive buffer
+  if(!digitalRead(CAN_INT_PIN))            // If CAN_INT_PIN pin is low, read receive buffer
   {
     CAN.readMsgBuf(&rxId, &len, buf);       // Read data: len = data length, buf = data byte(s)
 
