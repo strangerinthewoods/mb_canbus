@@ -57,6 +57,27 @@ void loop() {
     Serial.println();
   }
 
+  if(CAN.checkError() == CAN_CTRLERROR)
+  {
+    Serial.print("Error register value: ");
+    byte tempErr = CAN.getError() & MCP_EFLG_ERRORMASK; // We are only interested in errors, not warnings.
+    Serial.println(tempErr, BIN);
+    
+    Serial.print("Transmit error counter register value: ");
+    tempErr = CAN.errorCountTX();
+    Serial.println(tempErr, DEC);
+    
+    Serial.print("Receive error counter register value: ");
+    tempErr = CAN.errorCountRX();
+    Serial.println(tempErr, DEC);
+  }
+
+
+
+
+
+
+
   
   // Receipt message
   // *************************************
