@@ -10,10 +10,8 @@ MCP_CAN CAN(SPI_CS_PIN);
 void setup()
 {
 
-  #ifdef DEBUG
-    Serial.begin(115200);
-    while(!Serial);
-  #endif
+  //DEBUG_PRINT("Starting serial console...");
+  Serial.begin(115200);
 
   DEBUG_PRINT("Starting SPI communication...");
   SPI.begin();
