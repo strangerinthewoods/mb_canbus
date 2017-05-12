@@ -12,8 +12,9 @@ unsigned char buf[8];
 
 void setup()
 {
-  //DEBUG_PRINT("Starting serial console...");
+  #ifdef DEBUG
   Serial.begin(115200);
+  #endif
 
   DEBUG_PRINT("Starting can bus controller...");
   while (CAN_OK != CAN.begin(MCP_ANY, CAN_250KBPS, MCP_8MHZ))
