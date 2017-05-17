@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define DEBUG
 
+#define FUNCTIONAL_ID 0x98DB33F1
+
 // Set CS to pin 10
 #define SPI_CS_PIN 10
 

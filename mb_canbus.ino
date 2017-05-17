@@ -5,6 +5,8 @@
 
 // Globals
 MCP_CAN CAN(SPI_CS_PIN);
+
+// CAN RX Variables
 long unsigned int rxId;
 unsigned char len = 0;
 unsigned char buf[8];
@@ -13,60 +15,54 @@ unsigned char buf[8];
 void setup()
 {
   #ifdef DEBUG
-  Serial.begin(115200);
+    Serial.begin(115200);
+    while (!Serial);
   #endif
 
-  DEBUG_PRINT("Starting can bus controller...");
-  while (CAN_OK != CAN.begin(MCP_ANY, CAN_250KBPS, MCP_8MHZ))
+  DEBUG_PRINT("CAN BUS: starting controller");
+  while (CAN_OK != CAN.begin(MCP_STDEXT, CAN_500KBPS, MCP_8MHZ))
   {
-    DEBUG_PRINT("CAN BUS Shield init: ERROR");
+    DEBUG_PRINT("CAN BUS: starting error! Trying again...");
     delay(500);
   }
 
+  // Allow all Standard IDs
+  DEBUG_PRINT("CAN BUS: setting standard filters");
+  CAN.init_Mask(0,0x0000000);                // Init first mask...
+  CAN.init_Filt(0,0x0000000);                // Init first filter...
+  CAN.init_Filt(1,0x0000000);                // Init second filter...
+  // Allow all Extended IDs
+  DEBUG_PRINT("CAN BUS: setting extended filters");
+  CAN.init_Mask(1,0x8000000);                // Init second mask...
+  CAN.init_Filt(2,0x8000000);                // Init third filter...
+  CAN.init_Filt(3,0x8000000);                // Init fouth filter...
+  CAN.init_Filt(4,0x8000000);                // Init fifth filter...
+  CAN.init_Filt(5,0x8000000);                // Init sixth filter...
+  
   // Set operation mode to normal so the MCP2515 sends acks to received data.
+  DEBUG_PRINT("CAN BUS: setting mode normal");
   CAN.setMode(MCP_NORMAL);
 
   // Configuring pin for /INT input
+  DEBUG_PRINT("CAN BUS: setting input interrupt");
   pinMode(CAN_INT_PIN, INPUT);
   
-  DEBUG_PRINT("CAN BUS Shield init: OK");
+  DEBUG_PRINT("CAN BUS: shield init successful");
 }
 
 
-void loop() {
+void loop()
+{
 
   // Receipt message
   // *************************************
   // If CAN_INT_PIN pin is low, read receive buffer
-  if(!digitalRead(CAN_INT_PIN))
+  if (LOW == digitalRead(CAN_INT_PIN))
   {
-    char msgString[128];
-
     // Read data: len = data length, buf = data byte(s)
     CAN.readMsgBuf(&rxId, &len, buf);
 
-    // Determine if ID is standard (11 bits) or extended (29 bits)
-    if((rxId & 0x80000000) == 0x80000000)
-      sprintf(msgString, "Extended ID: 0x%.8lX  DLC: %1d  Data:", (rxId & 0x1FFFFFFF), len);
-    else
-      sprintf(msgString, "Standard ID: 0x%.3lX  DLC: %1d  Data:", rxId, len);
-    Serial.print(msgString);
-
-    // Determine if message is a remote request frame
-    if((rxId & 0x40000000) == 0x40000000)
-    {
-      sprintf(msgString, " REMOTE REQUEST FRAME");
-      Serial.print(msgString);
-    } else {
-      for(byte i = 0; i < len; i++)
-      {
-        sprintf(msgString, " 0x%.2X", buf[i]);
-        Serial.print(msgString);
-      }
-    }
-    Serial.println();
-
-    switch(rxId)
+    switch (rxId)
     {
 //      case 1:
 //        DEBUG_PRINT("[RECV] Ignition On/Off");
@@ -93,4 +89,5 @@ void loop() {
     
   }
 
+  
 }
